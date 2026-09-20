@@ -1,0 +1,329 @@
+{
+  "results": [
+    {
+      "name": "CLS on /",
+      "pass": true,
+      "detail": "cls=0.0000"
+    },
+    {
+      "name": "CLS on /zh",
+      "pass": true,
+      "detail": "cls=0.0000"
+    },
+    {
+      "name": "dropdown opens on click",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dropdown sets aria-expanded",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dropdown closes on Escape",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dropdown opens from the keyboard",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dropdown routes post renovation here and upholstery to its own site",
+      "pass": true,
+      "detail": "11 links"
+    },
+    {
+      "name": "mobile menu opens on tap",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "services expand inline on tap",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile menu closes on tap",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sticky bar clears the footer copyright on /",
+      "pass": true,
+      "detail": "copyright bottom 677px, bar top 767px"
+    },
+    {
+      "name": "sticky bar clears the footer copyright on /zh",
+      "pass": true,
+      "detail": "copyright bottom 677px, bar top 767px"
+    },
+    {
+      "name": "/ booking link present",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "/ sticky bar anchors to the quote builder",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "/ single WhatsApp target",
+      "pass": true,
+      "detail": "https://wa.me/60174770978?text=Hi%20Kleaner%2C%20I'd%20like%20to%20book%20post-renovation%20cleaning.%0AProperty%3A%20Condo%2C%201%2C000%20sqft%0APackage%3A%20Move-In%20Ready%20(clean%20%2B%20formaldehyde%20treatment)%0AEstimated%20total%3A%20RM1%2C480"
+    },
+    {
+      "name": "/ WhatsApp number is the chat line",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "/zh booking link present",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "/zh sticky bar anchors to the quote builder",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "/zh single WhatsApp target",
+      "pass": true,
+      "detail": "https://wa.me/60174770978?text=%E4%BD%A0%E5%A5%BD%20Kleaner%EF%BC%8C%E6%88%91%E6%83%B3%E9%A2%84%E8%AE%A2%E8%A3%85%E4%BF%AE%E5%90%8E%E6%B8%85%E6%B4%81%E3%80%82%0A%E7%89%A9%E4%B8%9A%3A%20%E5%85%AC%E5%AF%93%2C%201%2C000%20sqft%0A%E9%85%8D%E5%A5%97%3A%20%E5%85%A5%E4%BD%8F%E6%97%A0%E5%BF%A7%E7%89%88%EF%BC%88%E6%B8%85%E6%B4%81%20%2B%20%E9%99%A4%E7%94%B2%E9%86%9B%E5%A4%84%E7%90%86%EF%BC%89%0A%E9%A2%84%E4%BC%B0%E6%80%BB%E9%A2%9D%3A%20RM1%2C480"
+    },
+    {
+      "name": "/zh WhatsApp number is the chat line",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "/ pushes cta_book with page and service",
+      "pass": true,
+      "detail": "{\"event\":\"cta_book\",\"page\":\"/\",\"service\":\"post-renovation\",\"cta_text\":\"Book Now\"}"
+    },
+    {
+      "name": "/ pushes cta_whatsapp with page and service",
+      "pass": true,
+      "detail": "{\"event\":\"cta_whatsapp\",\"page\":\"/\",\"service\":\"post-renovation\",\"cta_text\":\"Send My Handover Date\"}"
+    },
+    {
+      "name": "/zh pushes cta_book with page and service",
+      "pass": true,
+      "detail": "{\"event\":\"cta_book\",\"page\":\"/zh\",\"service\":\"post-renovation\",\"cta_text\":\"立即预订\"}"
+    },
+    {
+      "name": "/zh pushes cta_whatsapp with page and service",
+      "pass": true,
+      "detail": "{\"event\":\"cta_whatsapp\",\"page\":\"/zh\",\"service\":\"post-renovation\",\"cta_text\":\"发送我的交楼日期\"}"
+    },
+    {
+      "name": "reduced motion leaves nothing hidden on /",
+      "pass": true,
+      "detail": "0 hidden"
+    },
+    {
+      "name": "reduced motion drops the travel on /",
+      "pass": true,
+      "detail": "0 transformed"
+    },
+    {
+      "name": "quote builder is usable under reduced motion on /",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reduced motion leaves nothing hidden on /zh",
+      "pass": true,
+      "detail": "0 hidden"
+    },
+    {
+      "name": "reduced motion drops the travel on /zh",
+      "pass": true,
+      "detail": "0 transformed"
+    },
+    {
+      "name": "quote builder is usable under reduced motion on /zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "calculator is revealed when the script runs",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "the no-script note is removed when the script runs",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "quote totals 600 sqft Dust-Free as RM720",
+      "pass": true,
+      "detail": "got RM720"
+    },
+    {
+      "name": "quote totals 600 sqft Move-In Ready as RM1,000",
+      "pass": true,
+      "detail": "got RM1,000"
+    },
+    {
+      "name": "quote totals 600 sqft Family Safe as RM1,300",
+      "pass": true,
+      "detail": "got RM1,300"
+    },
+    {
+      "name": "quote totals 1000 sqft Dust-Free as RM1,200",
+      "pass": true,
+      "detail": "got RM1,200"
+    },
+    {
+      "name": "quote totals 1000 sqft Move-In Ready as RM1,480",
+      "pass": true,
+      "detail": "got RM1,480"
+    },
+    {
+      "name": "quote totals 1000 sqft Family Safe as RM1,780",
+      "pass": true,
+      "detail": "got RM1,780"
+    },
+    {
+      "name": "quote totals 2200 sqft Dust-Free as RM2,640",
+      "pass": true,
+      "detail": "got RM2,640"
+    },
+    {
+      "name": "quote totals 2200 sqft Move-In Ready as RM2,920",
+      "pass": true,
+      "detail": "got RM2,920"
+    },
+    {
+      "name": "quote totals 2200 sqft Family Safe as RM3,220",
+      "pass": true,
+      "detail": "got RM3,220"
+    },
+    {
+      "name": "above 10,000 sqft the calculator asks for a site visit",
+      "pass": true,
+      "detail": "Above 10,000 sqft we quote after a site visit. WhatsApp us for a site visit."
+    },
+    {
+      "name": "WhatsApp message carries \"Hi Kleaner, I'd like to book post-renovation cleaning.\"",
+      "pass": true,
+      "detail": "Hi Kleaner, I'd like to book post-renovation cleaning. / Property: Condo, 1,000 sqft, Mont Kiara / Package: Move-In Ready (clean + formaldehyde treatment) / Add-ons: 1x 3 Seater sofa / Estimated total: RM1,648 / Handover: 3 Oct. Move-in: 10 Oct."
+    },
+    {
+      "name": "WhatsApp message carries \"Property: Condo, 1,000 sqft, Mont Kiara\"",
+      "pass": true,
+      "detail": "Hi Kleaner, I'd like to book post-renovation cleaning. / Property: Condo, 1,000 sqft, Mont Kiara / Package: Move-In Ready (clean + formaldehyde treatment) / Add-ons: 1x 3 Seater sofa / Estimated total: RM1,648 / Handover: 3 Oct. Move-in: 10 Oct."
+    },
+    {
+      "name": "WhatsApp message carries \"Package: Move-In Ready (clean + formaldehyde treatment)\"",
+      "pass": true,
+      "detail": "Hi Kleaner, I'd like to book post-renovation cleaning. / Property: Condo, 1,000 sqft, Mont Kiara / Package: Move-In Ready (clean + formaldehyde treatment) / Add-ons: 1x 3 Seater sofa / Estimated total: RM1,648 / Handover: 3 Oct. Move-in: 10 Oct."
+    },
+    {
+      "name": "WhatsApp message carries \"Add-ons: 1x 3 Seater sofa\"",
+      "pass": true,
+      "detail": "Hi Kleaner, I'd like to book post-renovation cleaning. / Property: Condo, 1,000 sqft, Mont Kiara / Package: Move-In Ready (clean + formaldehyde treatment) / Add-ons: 1x 3 Seater sofa / Estimated total: RM1,648 / Handover: 3 Oct. Move-in: 10 Oct."
+    },
+    {
+      "name": "WhatsApp message carries \"Estimated total: RM1,648\"",
+      "pass": true,
+      "detail": "Hi Kleaner, I'd like to book post-renovation cleaning. / Property: Condo, 1,000 sqft, Mont Kiara / Package: Move-In Ready (clean + formaldehyde treatment) / Add-ons: 1x 3 Seater sofa / Estimated total: RM1,648 / Handover: 3 Oct. Move-in: 10 Oct."
+    },
+    {
+      "name": "WhatsApp message carries \"Handover: 3 Oct. Move-in: 10 Oct.\"",
+      "pass": true,
+      "detail": "Hi Kleaner, I'd like to book post-renovation cleaning. / Property: Condo, 1,000 sqft, Mont Kiara / Package: Move-In Ready (clean + formaldehyde treatment) / Add-ons: 1x 3 Seater sofa / Estimated total: RM1,648 / Handover: 3 Oct. Move-in: 10 Oct."
+    },
+    {
+      "name": "WhatsApp total matches the displayed total",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "the sticky bar carries the same quote",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no reference line without a campaign",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "the total is announced as a sentence",
+      "pass": true,
+      "detail": "Estimated total RM1,648 for Move-In Ready, 1,000 sqft."
+    },
+    {
+      "name": "campaign reference is appended as the last line",
+      "pass": true,
+      "detail": "Hi Kleaner, I'd like to book post-renovation cleaning. / Property: Condo, 1,000 sqft / Package: Move-In Ready (clean + formaldehyde treatment) / Estimated total: RM1,480 / Ref: google/postreno-kl"
+    },
+    {
+      "name": "a lone utm_source still attributes cleanly",
+      "pass": true,
+      "detail": "Hi Kleaner, I'd like to book post-renovation cleaning. / Property: Condo, 1,000 sqft / Package: Move-In Ready (clean + formaldehyde treatment) / Estimated total: RM1,480 / Ref: google"
+    },
+    {
+      "name": "quote_started fires once on first interaction",
+      "pass": true,
+      "detail": "{\"event\":\"quote_started\",\"page\":\"/\",\"service\":\"post-renovation\"}"
+    },
+    {
+      "name": "quote_package carries the package",
+      "pass": true,
+      "detail": "{\"event\":\"quote_package\",\"page\":\"/\",\"service\":\"post-renovation\",\"package\":\"familySafe\"}"
+    },
+    {
+      "name": "quote_completed carries bucket, package and total",
+      "pass": true,
+      "detail": "{\"event\":\"quote_completed\",\"page\":\"/\",\"service\":\"post-renovation\",\"sqft_bucket\":\"2000-3499\",\"package\":\"familySafe\",\"total\":3220}"
+    },
+    {
+      "name": "quote events carry page and service like the CTA events",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "the price table is there without JavaScript",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "the calculator stays hidden without JavaScript",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "the no-script note explains how to work it out",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "the packages are readable without JavaScript",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "nothing is hidden without JavaScript",
+      "pass": true,
+      "detail": "0 hidden"
+    },
+    {
+      "name": "empty readings show the waiting state",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no reading cards are rendered",
+      "pass": true,
+      "detail": ""
+    }
+  ]
+}

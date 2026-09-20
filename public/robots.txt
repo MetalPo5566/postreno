@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://postreno.kleaner.my/sitemap.xml

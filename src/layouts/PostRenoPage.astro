@@ -1,0 +1,171 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import Section from '../components/Section.astro'
+import TrustStrip from '../components/TrustStrip.astro'
+import PostRenoHero from '../components/PostRenoHero.astro'
+import TwoJobs from '../components/TwoJobs.astro'
+import Timeline from '../components/Timeline.astro'
+import Protocol from '../components/Protocol.astro'
+import MeterProof from '../components/MeterProof.astro'
+import BeforeAfter from '../components/BeforeAfter.astro'
+import QuoteBuilder from '../components/QuoteBuilder.astro'
+import GuaranteeCards from '../components/GuaranteeCards.astro'
+import WhoBooks from '../components/WhoBooks.astro'
+import Faq from '../components/Faq.astro'
+import Sources from '../components/Sources.astro'
+import Reviews from '../components/Reviews.astro'
+import ServiceAreas from '../components/ServiceAreas.astro'
+import CrossSell from '../components/CrossSell.astro'
+import CtaBand from '../components/CtaBand.astro'
+import { SITE, PAGES, whatsappLink } from '../data/site'
+import { localBusinessSchema, serviceSchema } from '../lib/schema'
+import type { PostRenoCopy } from '../data/copy/types'
+
+// The whole page, once. Both language pages pass a copy object and change
+// nothing else, so the two can never drift apart structurally.
+interface Props {
+  copy: PostRenoCopy
+}
+const { copy } = Astro.props as Props
+
+const SERVICE = 'post-renovation'
+
+// The Service offers are the post-renovation rate and the two air treatments.
+// The sofa and mattress groups are a cross-sell from another service and are
+// deliberately not offered here.
+const SCHEMA_GROUPS = ['postreno', 'treatment']
+
+const whatsappHref = whatsappLink(copy.hero.waHandover)
+const canonical = `${SITE.url}${copy.path === '/' ? '/' : copy.path}`
+
+const schemas = [
+  localBusinessSchema(`${SITE.url}${copy.meta.ogImage}`),
+  serviceSchema({
+    name: 'Post-renovation cleaning and formaldehyde treatment',
+    description: copy.meta.description,
+    url: canonical,
+    groups: SCHEMA_GROUPS,
+    serviceType: 'Post-renovation cleaning',
+  }),
+]
+
+const alternates = [
+  { hrefLang: 'en-MY', href: `${SITE.url}/` },
+  { hrefLang: 'zh-Hans-MY', href: `${SITE.url}${PAGES.postRenoZh}` },
+  { hrefLang: 'x-default', href: `${SITE.url}/` },
+]
+---
+
+<BaseLayout
+  title={copy.meta.title}
+  description={copy.meta.description}
+  path={copy.path}
+  ogImage={copy.meta.ogImage}
+  schemas={schemas}
+  whatsappHref={whatsappHref}
+  service={SERVICE}
+  htmlLang={copy.htmlLang}
+  ogLocale={copy.ogLocale}
+  alternates={alternates}
+  preloadImage="/images/postreno-hero.jpg"
+  stickyBookHref="#quote"
+  stickyBookLabel={copy.stickyBook}
+  langSwitch={copy.langSwitch}
+>
+  <PostRenoHero copy={copy} service={SERVICE} />
+
+  <TrustStrip items={copy.trust.items} policy={copy.trust.policy} />
+
+  <Section
+    id="two-jobs"
+    eyebrow={copy.twoJobs.eyebrow}
+    title={copy.twoJobs.title}
+    lead={copy.twoJobs.lead}
+  >
+    <TwoJobs copy={copy} />
+  </Section>
+
+  <Section
+    id="timing"
+    eyebrow={copy.window.eyebrow}
+    title={copy.window.title}
+    lead={copy.window.lead}
+    tint
+  >
+    <Timeline copy={copy} service={SERVICE} />
+  </Section>
+
+  <Section
+    id="protocol"
+    eyebrow={copy.protocol.eyebrow}
+    title={copy.protocol.title}
+    lead={copy.protocol.lead}
+  >
+    <Protocol copy={copy} />
+  </Section>
+
+  <Section id="proof" eyebrow={copy.proof.eyebrow} title={copy.proof.title} lead={copy.proof.lead} tint>
+    <MeterProof copy={copy} />
+    <div class="mt-12">
+      <BeforeAfter
+        before="/images/postreno-before.jpg"
+        after="/images/postreno-after.jpg"
+        beforeAlt={copy.proof.slider.beforeAlt}
+        afterAlt={copy.proof.slider.afterAlt}
+        label={copy.proof.slider.label}
+        caption={copy.proof.slider.caption}
+        beforeLabel={copy.proof.slider.beforeLabel}
+        afterLabel={copy.proof.slider.afterLabel}
+      />
+    </div>
+  </Section>
+
+  <Section
+    eyebrow={copy.pricing.eyebrow}
+    title={copy.pricing.title}
+    lead={copy.pricing.lead}
+    align="left"
+  >
+    <QuoteBuilder copy={copy} service={SERVICE} />
+  </Section>
+
+  <Section eyebrow={copy.guarantee.eyebrow} title={copy.guarantee.title} tint>
+    <GuaranteeCards copy={copy} />
+  </Section>
+
+  <Section eyebrow={copy.whoBooks.eyebrow} title={copy.whoBooks.title}>
+    <WhoBooks copy={copy} />
+  </Section>
+
+  <Section id="faq" eyebrow={copy.faq.eyebrow} title={copy.faq.title} tint>
+    <Faq items={[...copy.faq.items]} />
+  </Section>
+
+  <Section
+    id="sources"
+    eyebrow={copy.sources.eyebrow}
+    title={copy.sources.title}
+    lead={copy.sources.lead}
+  >
+    <Sources copy={copy} />
+  </Section>
+
+  <Section eyebrow={copy.reviews.eyebrow} title={copy.reviews.title} tint>
+    <Reviews />
+  </Section>
+
+  <Section eyebrow={copy.areas.eyebrow} title={copy.areas.title}>
+    <ServiceAreas intro={copy.areas.intro} outro={copy.areas.outro} />
+  </Section>
+
+  <Section eyebrow={copy.crossSell.eyebrow} title={copy.crossSell.title} tint>
+    <CrossSell items={[...copy.crossSell.items]} />
+  </Section>
+
+  <CtaBand
+    title={copy.ctaBand.title}
+    text={copy.ctaBand.text}
+    whatsappHref={whatsappHref}
+    service={SERVICE}
+  />
+</BaseLayout>

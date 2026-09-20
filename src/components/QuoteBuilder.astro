@@ -1,0 +1,644 @@
+---
+import Icon from './Icon.astro'
+import ConfirmNote from './ConfirmNote.astro'
+import {
+  prices,
+  rm,
+  rmTotal,
+  RATE_PER_SQFT,
+  PACKAGES,
+  packageTotal,
+  WORKED_EXAMPLES,
+  SQFT_MIN,
+  SQFT_MAX,
+  SITE,
+  whatsappLink,
+} from '../data/site'
+import type { PostRenoCopy } from '../data/copy/types'
+
+// Progressive enhancement, the same contract as the upholstery PriceGrid.
+// With JavaScript off this is three package cards and a worked example table,
+// which is a readable price list. With JavaScript it becomes the calculator:
+// area in, package chosen, live total out, and the quote written into every
+// WhatsApp control on the page so the enquiry arrives already qualified.
+//
+// Every figure comes from prices.json. Nothing here is hard coded.
+interface Props {
+  copy: PostRenoCopy
+  service: string
+}
+const { copy, service } = Astro.props as Props
+const pricing = copy.pricing
+const builder = pricing.builder
+
+const DEFAULT_SQFT = 1000
+const DEFAULT_PACKAGE = 'moveInReady'
+const CROSS_SELL_GROUPS = ['sofa', 'mattress']
+
+const addOnsFor = (key: string) => PACKAGES.find((entry) => entry.key === key)?.addOns ?? 0
+
+/** Package cards, priced from prices.json, in the order the copy lists them. */
+const packageCards = pricing.packages.map((entry) => ({
+  ...entry,
+  addOns: addOnsFor(entry.key),
+}))
+
+const strings = {
+  intro: builder.wa.intro,
+  property: builder.wa.property,
+  packageLine: builder.wa.packageLine,
+  addOnsLine: builder.wa.addOnsLine,
+  total: builder.wa.total,
+  handover: builder.wa.handover,
+  moveIn: builder.wa.moveIn,
+  totalHint: builder.totalHint,
+  dateLocale: builder.dateLocale,
+  tooBig: builder.sqftTooBig,
+  tooSmall: builder.sqftTooSmall,
+  sendQuote: builder.sendQuote,
+  packages: Object.fromEntries(pricing.packages.map((entry) => [entry.key, entry.waLabel])),
+  packageNames: Object.fromEntries(pricing.packages.map((entry) => [entry.key, entry.name])),
+  currency: prices.prefix,
+}
+---
+
+<div
+  id="quote"
+  class="scroll-mt-24"
+  data-quote-builder
+  data-service={service}
+  data-wa-number={SITE.whatsapp}
+  data-rate={RATE_PER_SQFT}
+  data-sqft-min={SQFT_MIN}
+  data-sqft-max={SQFT_MAX}
+>
+  <script type="application/json" data-qb-strings set:html={JSON.stringify(strings)} is:inline />
+
+  <div class="flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-8" data-reveal>
+    <p class="text-[17px] md:text-[19px]">
+      <strong class="text-[22px] font-black text-brand-dark md:text-[26px]">{rm(RATE_PER_SQFT)}</strong>
+      {' '}{pricing.rateLine}
+    </p>
+    <ul class="flex flex-wrap gap-x-6 gap-y-2">
+      {
+        prices.groups.treatment.items.map((item) => (
+          <li class="text-[16px]">
+            <span class="font-bold text-navy">{item.name}</span>
+            {' '}
+            <span class="font-black text-brand-dark">{rm(item.price)}</span>
+            {' '}
+            <span>{prices.groups.treatment.unit}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  {/* The three packages. Always rendered, so this reads as a price list with
+      JavaScript off and as the menu above the calculator with it on. */}
+  <ul class="mt-8 grid gap-5 lg:grid-cols-3">
+    {
+      packageCards.map((card) => (
+        <li
+          class={`relative flex flex-col rounded-card border-2 bg-white p-6 shadow-soft md:p-7 ${
+            card.key === DEFAULT_PACKAGE ? 'border-brand-dark' : 'border-brand-line'
+          }`}
+          data-reveal
+        >
+          {card.key === DEFAULT_PACKAGE && (
+            <span class="absolute -top-3 left-6 rounded-full bg-brand-dark px-3 py-1 text-[12px] font-black uppercase tracking-wide text-white">
+              {pricing.recommended}
+            </span>
+          )}
+
+          <h3 class="text-[22px] font-black md:text-[24px]">{card.name}</h3>
+          <p class="mt-1.5 text-[16px] leading-relaxed">{card.tagline}</p>
+
+          <p class="mt-4 text-[17px] font-bold text-navy">
+            {
+              card.addOns === 0
+                ? pricing.perSqft.replace('{rate}', rm(RATE_PER_SQFT))
+                : pricing.perSqftPlusJob
+                    .replace('{rate}', rm(RATE_PER_SQFT))
+                    .replace('{price}', rmTotal(card.addOns))
+            }
+          </p>
+
+          <ul class="mt-5 flex grow flex-col gap-2.5 border-t border-brand-line pt-5">
+            {card.includes.map((line) => (
+              <li class="flex gap-2.5 text-[15px] leading-relaxed text-navy">
+                <Icon name="check" size={18} class="mt-0.5 shrink-0 text-brand-dark" />
+                <span>{line}</span>
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))
+    }
+  </ul>
+
+  {/* The calculator. Hidden until the script confirms it can run, so nothing
+      inert is ever on screen. */}
+  <div class="mt-8" data-qb-interactive hidden>
+    <div class="rounded-card border-2 border-brand-line bg-white p-6 shadow-soft md:p-8" data-reveal>
+      <h3 class="text-[22px] font-black md:text-[26px]">{builder.heading}</h3>
+
+      <div class="mt-6 grid gap-5 md:grid-cols-2">
+        <p class="flex flex-col gap-2">
+          <label for="qb-type" class="text-[15px] font-bold text-navy">{builder.propertyType}</label>
+          <select
+            id="qb-type"
+            class="rounded-2xl border-2 border-brand-line bg-white px-4 py-3 text-[17px] font-bold text-navy"
+            data-qb-type
+          >
+            {builder.propertyTypes.map((option) => <option value={option}>{option}</option>)}
+          </select>
+        </p>
+
+        <p class="flex flex-col gap-2">
+          <label for="qb-area" class="text-[15px] font-bold text-navy">{builder.area}</label>
+          <input
+            id="qb-area"
+            type="text"
+            autocomplete="address-level3"
+            placeholder={builder.areaPlaceholder}
+            class="rounded-2xl border-2 border-brand-line bg-white px-4 py-3 text-[17px] text-navy placeholder:text-ink/60"
+            data-qb-area
+          />
+        </p>
+
+        <p class="flex flex-col gap-2 md:col-span-2">
+          <label for="qb-sqft" class="text-[15px] font-bold text-navy">{builder.sqft}</label>
+          <input
+            id="qb-sqft"
+            type="number"
+            inputmode="numeric"
+            min={SQFT_MIN}
+            max={SQFT_MAX}
+            step="10"
+            value={DEFAULT_SQFT}
+            aria-describedby="qb-sqft-hint"
+            class="rounded-2xl border-2 border-brand-line bg-white px-4 py-3 text-[19px] font-black tabular-nums text-navy"
+            data-qb-sqft
+          />
+          <span id="qb-sqft-hint" class="text-[14px]">{builder.sqftHint}</span>
+          <span class="hidden text-[15px] font-bold text-[#8A6400]" data-qb-sqft-error role="status"></span>
+        </p>
+      </div>
+
+      <fieldset class="mt-7">
+        <legend class="text-[15px] font-bold text-navy">{builder.packageLabel}</legend>
+        <div class="mt-3 grid gap-3 md:grid-cols-3">
+          {
+            packageCards.map((card) => (
+              <label class="press flex cursor-pointer items-start gap-3 rounded-2xl border-2 border-brand-line bg-white p-4 transition-colors has-[:checked]:border-brand-dark has-[:checked]:bg-brand-tint">
+                <input
+                  type="radio"
+                  name="qb-package"
+                  value={card.key}
+                  checked={card.key === DEFAULT_PACKAGE}
+                  data-qb-package
+                  data-addons={card.addOns}
+                  class="mt-1 h-5 w-5 shrink-0 accent-[#0071D1]"
+                />
+                <span>
+                  <span class="block text-[17px] font-bold text-navy">{card.name}</span>
+                  <span class="mt-0.5 block text-[15px] tabular-nums" data-qb-package-price>
+                    {rmTotal(packageTotal(DEFAULT_SQFT, card.key))}
+                  </span>
+                </span>
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <fieldset class="mt-7">
+        <legend class="text-[15px] font-bold text-navy">{builder.addOns}</legend>
+        <p class="mt-1 text-[14px]">{builder.addOnsHint}</p>
+
+        <div class="mt-3 grid gap-x-8 gap-y-1 md:grid-cols-2">
+          {
+            CROSS_SELL_GROUPS.flatMap((key) =>
+              prices.groups[key].items.map((item) => (
+                <span
+                  class="flex items-center justify-between gap-4 border-b border-brand-line py-2.5 last:border-b-0"
+                  data-qb-stepper
+                  data-price={item.price}
+                  data-name={`${item.name} ${prices.groups[key].label.toLowerCase()}`}
+                >
+                  <span class="text-[16px] font-bold text-navy">
+                    {item.name} {prices.groups[key].label.toLowerCase()}
+                  </span>
+                  <span class="flex items-center gap-3">
+                    <span class="text-[16px] font-black text-brand-dark">{rm(item.price)}</span>
+                    <span class="flex items-center gap-1 rounded-full bg-brand-tint p-1">
+                      <button
+                        type="button"
+                        class="press flex h-9 w-9 items-center justify-center rounded-full text-navy transition-colors hover:bg-white disabled:opacity-35"
+                        data-step="-1"
+                        aria-label={`Remove one ${item.name} ${prices.groups[key].label.toLowerCase()}`}
+                        disabled
+                      >
+                        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14" /></svg>
+                      </button>
+                      <output
+                        class="w-5 text-center text-[16px] font-black tabular-nums text-navy"
+                        data-count
+                        aria-label={`${item.name} ${prices.groups[key].label.toLowerCase()} quantity`}
+                      >
+                        0
+                      </output>
+                      <button
+                        type="button"
+                        class="press flex h-9 w-9 items-center justify-center rounded-full text-navy transition-colors hover:bg-white"
+                        data-step="1"
+                        aria-label={`Add one ${item.name} ${prices.groups[key].label.toLowerCase()}`}
+                      >
+                        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                      </button>
+                    </span>
+                  </span>
+                </span>
+              ))
+            )
+          }
+        </div>
+      </fieldset>
+
+      <div class="mt-7 grid gap-5 md:grid-cols-2">
+        <p class="flex flex-col gap-2">
+          <label for="qb-handover" class="text-[15px] font-bold text-navy">{builder.handover}</label>
+          <input
+            id="qb-handover"
+            type="date"
+            class="rounded-2xl border-2 border-brand-line bg-white px-4 py-3 text-[17px] text-navy"
+            data-qb-handover
+          />
+        </p>
+        <p class="flex flex-col gap-2">
+          <label for="qb-movein" class="text-[15px] font-bold text-navy">{builder.moveIn}</label>
+          <input
+            id="qb-movein"
+            type="date"
+            class="rounded-2xl border-2 border-brand-line bg-white px-4 py-3 text-[17px] text-navy"
+            data-qb-movein
+          />
+        </p>
+      </div>
+
+      <div class="mt-8 rounded-card bg-brand-tint p-6">
+        <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+          <p class="text-[13px] font-bold uppercase tracking-[0.14em] text-brand-ink">
+            {builder.totalLabel}
+          </p>
+          <p class="text-[36px] font-black leading-none tabular-nums text-navy md:text-[44px]">
+            <span data-qb-total>{rmTotal(packageTotal(DEFAULT_SQFT, DEFAULT_PACKAGE))}</span>
+          </p>
+        </div>
+
+        {/* The number above is decorative for a screen reader: this sentence is
+            what gets announced, debounced so a held arrow key does not spam it. */}
+        <p class="sr-only" data-qb-announce aria-live="polite"></p>
+        <p class="mt-2 text-[14px]" data-qb-breakdown></p>
+        <p class="mt-3 text-[14px]">{builder.totalHint}</p>
+
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+          <a
+            href={SITE.bookingUrl}
+            class="press inline-flex flex-1 items-center justify-center gap-2.5 rounded-full bg-brand-dark px-7 py-4 text-[18px] font-bold leading-none text-white transition-colors hover:bg-[#005FB4]"
+            data-cta="book"
+            data-service={service}
+            data-qb-book
+            rel="noopener"
+          >
+            <Icon name="calendar" size={22} />
+            {builder.book}
+          </a>
+          <a
+            href={whatsappLink(builder.wa.intro)}
+            class="press inline-flex flex-1 items-center justify-center gap-2.5 rounded-full bg-wa px-7 py-4 text-[18px] font-bold leading-none text-navy transition-colors hover:bg-[#00b94d]"
+            data-cta="whatsapp"
+            data-service={service}
+            data-qb-wa
+            target="_blank"
+            rel="noopener"
+          >
+            <Icon name="whatsapp" size={22} />
+            {builder.sendQuote}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-8 text-[16px] leading-relaxed" data-qb-nojs>{builder.noJs}</p>
+
+  {/* Worked examples. Always rendered, with or without the calculator. */}
+  <div class="mt-10" data-reveal>
+    <h3 class="text-[21px] font-black md:text-[24px]">{pricing.examples.title}</h3>
+    <p class="mt-2 max-w-3xl text-[16px] leading-relaxed">{pricing.examples.lead}</p>
+
+    <div class="mt-5 overflow-x-auto">
+      <table class="w-full min-w-[34rem] border-collapse text-left">
+        <caption class="sr-only">
+          {pricing.examples.title}
+        </caption>
+        <thead>
+          <tr class="border-b-2 border-brand-line">
+            <th scope="col" class="py-3 pr-4 text-[15px] font-bold text-navy">
+              {pricing.examples.sizeColumn}
+            </th>
+            {
+              pricing.packages.map((entry) => (
+                <th scope="col" class="py-3 pr-4 text-[15px] font-bold text-navy">
+                  {entry.name}
+                </th>
+              ))
+            }
+          </tr>
+        </thead>
+        <tbody>
+          {
+            WORKED_EXAMPLES.map((sqft) => (
+              <tr class="border-b border-brand-line">
+                <th scope="row" class="py-3.5 pr-4 text-[16px] font-bold tabular-nums text-navy">
+                  {sqft.toLocaleString('en-MY')} sqft
+                </th>
+                {pricing.packages.map((entry) => (
+                  <td class="py-3.5 pr-4 text-[18px] font-black tabular-nums text-brand-dark">
+                    {rmTotal(packageTotal(sqft, entry.key))}
+                  </td>
+                ))}
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <p class="mt-4 text-[15px] leading-relaxed">{pricing.examples.note}</p>
+  </div>
+
+  <div class="mt-8 flex flex-col gap-3">
+    <ConfirmNote>{pricing.confirmMinimum}</ConfirmNote>
+    <ConfirmNote>{pricing.confirmCommercial}</ConfirmNote>
+    <ConfirmNote>{pricing.confirmBooking}</ConfirmNote>
+  </div>
+</div>
+
+<script>
+  // The calculator. Everything above works without this file; this is what
+  // turns it into a quote. Prices arrive through data attributes so
+  // prices.json stays the single source of truth for every figure.
+  declare global {
+    interface Window {
+      dataLayer: Record<string, unknown>[]
+    }
+  }
+
+  type Strings = {
+    intro: string
+    property: string
+    packageLine: string
+    addOnsLine: string
+    total: string
+    handover: string
+    moveIn: string
+    totalHint: string
+    totalPending: string
+    dateLocale: string
+    tooBig: string
+    tooSmall: string
+    sendQuote: string
+    packages: Record<string, string>
+    packageNames: Record<string, string>
+    currency: string
+  }
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-quote-builder]')) {
+    const config = root.querySelector<HTMLScriptElement>('[data-qb-strings]')
+    const panel = root.querySelector<HTMLElement>('[data-qb-interactive]')
+    const noJs = root.querySelector<HTMLElement>('[data-qb-nojs]')
+    if (!config || !panel) continue
+
+    const strings = JSON.parse(config.textContent || '{}') as Strings
+    const rate = Number(root.dataset.rate)
+    const sqftMin = Number(root.dataset.sqftMin)
+    const sqftMax = Number(root.dataset.sqftMax)
+    const waNumber = root.dataset.waNumber
+    const service = root.dataset.service || ''
+
+    const typeEl = root.querySelector<HTMLSelectElement>('[data-qb-type]')
+    const areaEl = root.querySelector<HTMLInputElement>('[data-qb-area]')
+    const sqftEl = root.querySelector<HTMLInputElement>('[data-qb-sqft]')
+    const sqftError = root.querySelector<HTMLElement>('[data-qb-sqft-error]')
+    const handoverEl = root.querySelector<HTMLInputElement>('[data-qb-handover]')
+    const moveInEl = root.querySelector<HTMLInputElement>('[data-qb-movein]')
+    const totalEl = root.querySelector<HTMLElement>('[data-qb-total]')
+    const breakdownEl = root.querySelector<HTMLElement>('[data-qb-breakdown]')
+    const announceEl = root.querySelector<HTMLElement>('[data-qb-announce]')
+    const bookEl = root.querySelector<HTMLAnchorElement>('[data-qb-book]')
+    const waEl = root.querySelector<HTMLAnchorElement>('[data-qb-wa]')
+    const packageEls = [...root.querySelectorAll<HTMLInputElement>('[data-qb-package]')]
+    const steppers = [...root.querySelectorAll<HTMLElement>('[data-qb-stepper]')]
+
+    if (!sqftEl || !totalEl || !waEl || !bookEl || packageEls.length === 0) continue
+
+    // The panel is inert markup until here, so nothing dead is ever on screen.
+    panel.hidden = false
+    noJs?.remove()
+
+    const counts = new Map<HTMLElement, number>()
+    let started = false
+
+    const money = (value: number) => `${strings.currency}${Math.round(value).toLocaleString('en-MY')}`
+
+    /** A date input hands back YYYY-MM-DD. Build it as a local date so a
+        container running on UTC does not print the day before. */
+    const shortDate = (value: string) => {
+      const parts = value.split('-').map(Number)
+      if (parts.length !== 3 || parts.some(Number.isNaN)) return ''
+      const date = new Date(parts[0], parts[1] - 1, parts[2])
+      return date.toLocaleDateString(strings.dateLocale, { day: 'numeric', month: 'short' })
+    }
+
+    const bucket = (value: number) => {
+      if (value < 800) return '300-799'
+      if (value < 1200) return '800-1199'
+      if (value < 2000) return '1200-1999'
+      if (value < 3500) return '2000-3499'
+      return '3500+'
+    }
+
+    const selectedPackage = () => packageEls.find((entry) => entry.checked) || packageEls[0]
+
+    const push = (event: string, extra: Record<string, unknown>) => {
+      window.dataLayer = window.dataLayer || []
+      window.dataLayer.push({ event, page: window.location.pathname, service, ...extra })
+    }
+
+    const start = () => {
+      if (started) return
+      started = true
+      push('quote_started', {})
+    }
+
+    /** utm_source and utm_campaign ride along so a lead can be attributed. */
+    const reference = () => {
+      const params = new URLSearchParams(window.location.search)
+      const parts = [params.get('utm_source'), params.get('utm_campaign')].filter(
+        (part): part is string => Boolean(part)
+      )
+      return parts.length ? `Ref: ${parts.join('/')}` : ''
+    }
+
+    let announceTimer = 0
+
+    const render = () => {
+      const raw = Number(sqftEl.value)
+      const valid = Number.isFinite(raw) && raw >= sqftMin && raw <= sqftMax
+
+      if (sqftError) {
+        const message = !Number.isFinite(raw) || raw === 0 ? '' : raw > sqftMax ? strings.tooBig : raw < sqftMin ? strings.tooSmall : ''
+        sqftError.textContent = message
+        sqftError.classList.toggle('hidden', message === '')
+      }
+
+      const pkg = selectedPackage()
+      const packageKey = pkg.value
+      const packageAddOns = Number(pkg.dataset.addons)
+
+      // Each radio shows what that package would cost at the area entered.
+      for (const entry of packageEls) {
+        const label = entry.parentElement?.querySelector<HTMLElement>('[data-qb-package-price]')
+        if (!label) continue
+        label.textContent = valid
+          ? money(Math.round(raw * rate) + Number(entry.dataset.addons))
+          : strings.totalPending
+      }
+
+      const picked: { name: string; count: number; price: number }[] = []
+      let extras = 0
+      for (const stepper of steppers) {
+        const count = counts.get(stepper) || 0
+        if (count === 0) continue
+        const price = Number(stepper.dataset.price)
+        extras += count * price
+        picked.push({ name: String(stepper.dataset.name), count, price })
+      }
+
+      const clean = valid ? Math.round(raw * rate) : 0
+      const total = clean + packageAddOns + extras
+
+      totalEl.textContent = valid ? money(total) : strings.totalPending
+
+      if (breakdownEl) {
+        if (!valid) {
+          breakdownEl.textContent = strings.tooBig
+        } else {
+          const parts = [`${raw.toLocaleString('en-MY')} sqft at ${strings.currency}${rate.toFixed(2)} = ${money(clean)}`]
+          if (packageAddOns > 0) parts.push(`${strings.packageNames[packageKey]} ${money(packageAddOns)}`)
+          if (extras > 0) parts.push(`add-ons ${money(extras)}`)
+          breakdownEl.textContent = parts.join(', plus ')
+        }
+      }
+
+      // Announced as a sentence, and debounced so holding an arrow key on the
+      // number input does not queue a dozen announcements.
+      if (announceEl) {
+        window.clearTimeout(announceTimer)
+        announceTimer = window.setTimeout(() => {
+          announceEl.textContent = valid
+            ? `${strings.total} ${money(total)} for ${strings.packageNames[packageKey]}, ${raw.toLocaleString('en-MY')} sqft.`
+            : strings.tooBig
+        }, 450)
+      }
+
+      // The itemised enquiry, exactly as it will land in the WhatsApp thread.
+      const lines = [strings.intro]
+      const propertyBits = [typeEl?.value, valid ? `${raw.toLocaleString('en-MY')} sqft` : '', areaEl?.value.trim()].filter(
+        (bit): bit is string => Boolean(bit)
+      )
+      if (propertyBits.length) lines.push(`${strings.property}: ${propertyBits.join(', ')}`)
+      lines.push(`${strings.packageLine}: ${strings.packages[packageKey]}`)
+      if (picked.length) {
+        lines.push(`${strings.addOnsLine}: ${picked.map((item) => `${item.count}x ${item.name}`).join(', ')}`)
+      }
+      if (valid) lines.push(`${strings.total}: ${money(total)}`)
+
+      const handover = handoverEl?.value ? shortDate(handoverEl.value) : ''
+      const moveIn = moveInEl?.value ? shortDate(moveInEl.value) : ''
+      const dates = [
+        handover ? `${strings.handover}: ${handover}.` : '',
+        moveIn ? `${strings.moveIn}: ${moveIn}.` : '',
+      ]
+        .filter(Boolean)
+        .join(' ')
+      if (dates) lines.push(dates)
+
+      const ref = reference()
+      if (ref) lines.push(ref)
+
+      const href = `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.join('\n'))}`
+      waEl.href = href
+
+      // Every other WhatsApp control on the page carries the same quote, so it
+      // does not matter which one the visitor reaches for.
+      for (const other of document.querySelectorAll<HTMLAnchorElement>('a[data-cta="whatsapp"]')) {
+        other.href = href
+      }
+    }
+
+    for (const stepper of steppers) {
+      const output = stepper.querySelector<HTMLElement>('[data-count]')
+      const minus = stepper.querySelector<HTMLButtonElement>('[data-step="-1"]')
+      if (!output || !minus) continue
+
+      stepper.addEventListener('click', (event) => {
+        const button = (event.target as Element).closest<HTMLButtonElement>('[data-step]')
+        if (!button) return
+        const next = Math.max(0, Math.min(20, (counts.get(stepper) || 0) + Number(button.dataset.step)))
+        counts.set(stepper, next)
+        output.textContent = String(next)
+        minus.disabled = next === 0
+        start()
+        render()
+      })
+    }
+
+    for (const entry of packageEls) {
+      entry.addEventListener('change', () => {
+        start()
+        push('quote_package', { package: entry.value })
+        render()
+      })
+    }
+
+    for (const field of [typeEl, areaEl, sqftEl, handoverEl, moveInEl]) {
+      field?.addEventListener('input', () => {
+        start()
+        render()
+      })
+    }
+
+    for (const control of [bookEl, waEl]) {
+      control.addEventListener('click', () => {
+        const raw = Number(sqftEl.value)
+        const pkg = selectedPackage()
+        const extras = steppers.reduce(
+          (sum, stepper) => sum + (counts.get(stepper) || 0) * Number(stepper.dataset.price),
+          0
+        )
+        const valid = Number.isFinite(raw) && raw >= sqftMin && raw <= sqftMax
+        push('quote_completed', {
+          sqft_bucket: valid ? bucket(raw) : 'over',
+          package: pkg.value,
+          total: valid ? Math.round(raw * rate) + Number(pkg.dataset.addons) + extras : 0,
+        })
+      })
+    }
+
+    render()
+  }
+</script>

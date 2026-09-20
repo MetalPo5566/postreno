@@ -1,0 +1,32 @@
+---
+import Icon from './Icon.astro'
+import type { IconName } from './Icon.astro'
+
+interface Props {
+  items: { icon: IconName; title: string; text: string; href: string; cta: string }[]
+}
+const { items } = Astro.props as Props
+---
+
+<ul class="grid gap-6 md:grid-cols-2">
+  {
+    items.map((item) => (
+      <li data-reveal>
+        <a
+          href={item.href}
+          class="lift flex h-full flex-col rounded-card border border-brand-line bg-white p-7 shadow-soft md:p-8"
+        >
+          <span class="flex h-14 w-14 items-center justify-center rounded-full bg-brand-circle text-brand-dark">
+            <Icon name={item.icon} size={28} />
+          </span>
+          <h3 class="mt-5 text-[21px] font-bold">{item.title}</h3>
+          <p class="mt-2 grow text-[16px] leading-relaxed">{item.text}</p>
+          <span class="mt-5 inline-flex items-center gap-2 text-[17px] font-bold text-brand-ink">
+            {item.cta}
+            <Icon name="arrow" size={19} />
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>

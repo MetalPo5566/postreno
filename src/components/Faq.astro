@@ -1,0 +1,61 @@
+---
+import Icon from './Icon.astro'
+import ConfirmNote from './ConfirmNote.astro'
+
+// Answers carry only verified facts. Anything the owner still has to confirm is
+// attached as a separate, clearly marked note, and the whole question is kept
+// out of the FAQPage structured data: an answer that is waiting on a note is
+// not a complete answer, so Google should not be shown it as one.
+export type FaqItem = {
+  q: string
+  a: string
+  confirm?: string
+}
+
+interface Props {
+  items: FaqItem[]
+}
+const { items } = Astro.props as Props
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items
+    .filter((item) => !item.confirm)
+    .map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+}
+---
+
+<div class="mx-auto max-w-3xl">
+  {
+    items.map((item) => (
+      <details
+        class="group mb-3 rounded-card border border-brand-line bg-white px-5 shadow-soft md:px-7"
+        data-reveal
+      >
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-5 py-5 text-[17px] font-bold text-navy md:text-[19px]">
+          {item.q}
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-circle text-brand-dark transition-transform duration-200 group-open:rotate-180">
+            <Icon name="chevron" size={19} />
+          </span>
+        </summary>
+        <div class="pb-6 text-[16px] leading-relaxed md:text-[17px]">
+          <p>{item.a}</p>
+          {item.confirm && <ConfirmNote class="mt-4">{item.confirm}</ConfirmNote>}
+        </div>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  summary::-webkit-details-marker {
+    display: none;
+  }
+</style>
+
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline />

@@ -1,0 +1,32 @@
+---
+import Icon from './Icon.astro'
+import { REVIEWS, SITE } from '../data/site'
+---
+
+<div>
+  <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    {
+      REVIEWS.map((review) => (
+        <li class="lift flex flex-col rounded-card border border-brand-line bg-white p-6 shadow-soft" data-reveal>
+          <span class="font-serif text-[46px] leading-none text-brand-circle" aria-hidden="true">
+            &ldquo;
+          </span>
+          <blockquote class="mt-1 grow text-[17px] font-bold leading-relaxed text-navy">
+            {review.quote}
+          </blockquote>
+          <p class="mt-4 text-[15px]">{review.author}</p>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="mt-8 text-center">
+    <a
+      href={SITE.reviewsUrl}
+      class="inline-flex items-center gap-2 text-[17px] font-bold text-brand-ink underline underline-offset-4"
+    >
+      See all reviews
+      <Icon name="arrow" size={19} />
+    </a>
+  </p>
+</div>

@@ -1,0 +1,40 @@
+---
+import Icon from './Icon.astro'
+import type { PostRenoCopy } from '../data/copy/types'
+
+interface Props {
+  copy: PostRenoCopy
+}
+const { copy } = Astro.props as Props
+---
+
+<div class="grid items-start gap-8 lg:grid-cols-[1fr_0.85fr] lg:gap-12">
+  <ul class="grid gap-5 sm:grid-cols-2">
+    {
+      copy.whoBooks.items.map((item) => (
+        <li
+          class="flex h-full flex-col rounded-card border border-brand-line bg-white p-6 shadow-soft"
+          data-reveal
+        >
+          <span class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-circle text-brand-dark">
+            <Icon name={item.icon} size={25} />
+          </span>
+          <h3 class="mt-4 text-[19px] font-bold">{item.title}</h3>
+          <p class="mt-2 text-[16px] leading-relaxed">{item.text}</p>
+        </li>
+      ))
+    }
+  </ul>
+
+  <figure data-reveal>
+    <img
+      src="/images/who-family.jpg"
+      alt={copy.whoBooks.imageAlt}
+      width="1040"
+      height="780"
+      loading="lazy"
+      decoding="async"
+      class="aspect-[4/3] w-full rounded-card object-cover shadow-soft"
+    />
+  </figure>
+</div>

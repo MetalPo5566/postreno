@@ -1,0 +1,24 @@
+---
+import { SERVICE_AREAS, SITE } from '../data/site'
+
+interface Props {
+  intro?: string
+  outro?: string
+}
+const {
+  intro = `We clean across ${SITE.areaServed}, including:`,
+  outro = 'Not on the list? WhatsApp us your address and we will confirm whether we cover it.',
+} = Astro.props as Props
+---
+
+<div class="rounded-card border border-brand-line bg-white p-7 shadow-soft md:p-10" data-reveal>
+  <p class="text-[17px] leading-relaxed">{intro}</p>
+  <ul class="mt-5 flex flex-wrap gap-2.5">
+    {
+      SERVICE_AREAS.map((area) => (
+        <li class="rounded-full bg-brand-tint px-4 py-2 text-[15px] font-bold text-navy">{area}</li>
+      ))
+    }
+  </ul>
+  <p class="mt-6 text-[16px]">{outro}</p>
+</div>

@@ -1,0 +1,49 @@
+---
+import Icon from './Icon.astro'
+import type { PostRenoCopy } from '../data/copy/types'
+
+interface Props {
+  copy: PostRenoCopy
+}
+const { copy } = Astro.props as Props
+const { visible, invisible, close } = copy.twoJobs
+
+const columns = [
+  { ...visible, icon: 'vacuum' as const, tone: 'plain' },
+  { ...invisible, icon: 'wind' as const, tone: 'accent' },
+]
+---
+
+<div>
+  <div class="grid gap-6 md:grid-cols-2">
+    {
+      columns.map((column) => (
+        <div
+          class={`flex flex-col rounded-card border p-7 shadow-soft md:p-8 ${
+            column.tone === 'accent'
+              ? 'border-brand-dark/25 bg-brand-tint ring-1 ring-brand-dark/10'
+              : 'border-brand-line bg-white'
+          }`}
+          data-reveal
+        >
+          <span class="flex h-14 w-14 items-center justify-center rounded-full bg-brand-circle text-brand-dark">
+            <Icon name={column.icon} size={28} />
+          </span>
+          <h3 class="mt-5 text-[23px] font-black md:text-[26px]">{column.title}</h3>
+          <p class="mt-2.5 text-[16px] leading-relaxed">{column.lead}</p>
+
+          <ul class="mt-6 flex flex-col gap-3.5">
+            {column.items.map((item) => (
+              <li class="flex gap-3 text-[16px] leading-relaxed text-navy">
+                <Icon name="check" size={19} class="mt-1 shrink-0 text-brand-dark" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+
+  <p class="mt-9 text-center text-[19px] font-bold text-navy md:text-[22px]" data-reveal>{close}</p>
+</div>

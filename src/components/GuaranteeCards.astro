@@ -1,0 +1,43 @@
+---
+import Icon from './Icon.astro'
+import ConfirmNote from './ConfirmNote.astro'
+import { SITE } from '../data/site'
+import type { PostRenoCopy } from '../data/copy/types'
+
+interface Props {
+  copy: PostRenoCopy
+}
+const { copy } = Astro.props as Props
+---
+
+<div class="grid gap-6 md:grid-cols-3">
+  {
+    copy.guarantee.cards.map((card) => (
+      <div
+        class={`flex flex-col rounded-card border p-6 shadow-soft md:p-7 ${
+          card.confirm ? 'border-[#F0C36D] bg-[#FFFDF7]' : 'border-brand-line bg-white'
+        }`}
+        data-reveal
+      >
+        <span
+          class={`flex h-13 w-13 items-center justify-center rounded-full ${
+            card.confirm ? 'bg-[#FDF0D2] text-[#8A6400]' : 'bg-brand-circle text-brand-dark'
+          }`}
+        >
+          <Icon name={card.icon} size={26} />
+        </span>
+        <h3 class="mt-4 text-[20px] font-bold">{card.title}</h3>
+        <p class="mt-2.5 grow text-[16px] leading-relaxed">{card.text}</p>
+        {card.confirm && <ConfirmNote class="mt-4">{card.confirm}</ConfirmNote>}
+      </div>
+    ))
+  }
+</div>
+
+<p class="mt-7 text-center text-[16px]" data-reveal>
+  {copy.guarantee.antiTheft.text}{' '}<a
+    href={SITE.antiTheftUrl}
+    class="font-bold text-brand-ink underline underline-offset-4"
+    >{copy.guarantee.antiTheft.linkLabel}</a
+  >.
+</p>

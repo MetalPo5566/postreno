@@ -1,0 +1,8 @@
+# Cloudflare Pages. Vercel ignores this file and reads vercel.json instead.
+https://www.postreno.kleaner.my/*  https://postreno.kleaner.my/:splat  301
+/index.html                        /                                    301
+/post-renovation-cleaning          /                                    301
+/formaldehyde-removal              /                                    301
+/post-reno-cleaning                /                                    301
+/cn                                /zh                                  301
+/zh-cn                             /zh                                  301

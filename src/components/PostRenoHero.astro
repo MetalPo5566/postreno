@@ -1,0 +1,93 @@
+---
+import Button from './Button.astro'
+import Icon from './Icon.astro'
+import { rm, rmTotal, RATE_PER_SQFT, cleanCost, whatsappLink } from '../data/site'
+import type { PostRenoCopy } from '../data/copy/types'
+
+interface Props {
+  copy: PostRenoCopy
+  service: string
+}
+const { copy, service } = Astro.props as Props
+const hero = copy.hero
+
+// Both figures come from prices.json, so the anchor above the fold and the
+// quote builder below it can never quote different numbers.
+const rate = rm(RATE_PER_SQFT)
+const exampleTotal = rmTotal(cleanCost(1000))
+---
+
+<section class="relative overflow-hidden border-b border-brand-line bg-brand-tint">
+  <div
+    class="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_80%_at_85%_0%,rgb(0_136_248/0.12)_0%,transparent_60%)]"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="wrap relative grid gap-10 py-12 md:py-16 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14 lg:py-20">
+    <div data-reveal>
+      <p class="text-[13px] font-bold uppercase tracking-[0.16em] text-brand-ink">{hero.eyebrow}</p>
+
+      <h1 class="mt-4 text-[34px] font-black leading-[1.08] md:text-[52px] lg:text-[56px]">
+        {hero.h1}
+      </h1>
+
+      <p class="mt-5 max-w-xl text-[17px] leading-relaxed md:text-[20px]">{hero.sub}</p>
+
+      {/* The price badges reserve their height so the row cannot reflow when
+          Lato arrives. Measured at 80px on the upholstery site and the longer
+          label here still wraps to two lines, so the rule carries over. */}
+      <div class="mt-7 grid max-w-xl grid-cols-2 gap-3">
+        <p class="flex min-h-20 flex-col justify-center rounded-2xl border border-brand-line bg-white px-4 py-3 shadow-soft">
+          <span class="text-[26px] font-black leading-none text-brand-dark md:text-[30px]">
+            {hero.anchorFrom} {rate}
+          </span>
+          <span class="mt-1.5 text-[14px] font-bold leading-snug text-navy">{hero.anchorRate}</span>
+        </p>
+        <p class="flex min-h-20 flex-col justify-center rounded-2xl border border-brand-line bg-white px-4 py-3 shadow-soft">
+          <span class="text-[14px] font-bold leading-snug text-navy">{hero.anchorExample}</span>
+          <span class="mt-1 text-[26px] font-black leading-none text-brand-dark md:text-[30px]">
+            {exampleTotal}
+          </span>
+        </p>
+      </div>
+
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <Button href="#quote" icon="arrow" external={false} wide>{hero.ctaPrimary}</Button>
+        <Button
+          href={whatsappLink(hero.waHandover)}
+          variant="whatsapp"
+          icon="whatsapp"
+          cta="whatsapp"
+          service={service}
+          wide
+        >
+          {hero.ctaWhatsApp}
+        </Button>
+      </div>
+
+      <ul class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[15px] font-bold text-navy">
+        {
+          hero.trust.map((item) => (
+            <li class="flex items-center gap-2">
+              <Icon name="check" size={17} class="shrink-0 text-brand-dark" />
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div data-reveal>
+      <img
+        src="/images/postreno-hero.jpg"
+        alt={hero.imageAlt}
+        width="1040"
+        height="780"
+        fetchpriority="high"
+        decoding="async"
+        class="aspect-[4/3] w-full rounded-card object-cover shadow-lift"
+      />
+    </div>
+  </div>
+</section>

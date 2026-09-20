@@ -1,0 +1,88 @@
+---
+import Icon from './Icon.astro'
+import ConfirmNote from './ConfirmNote.astro'
+import readingsData from '../data/readings.json'
+import type { PostRenoCopy } from '../data/copy/types'
+
+// Real readings only. The file ships as an empty array and this component
+// renders a visible empty state rather than an illustrative number, because a
+// sample figure on a page whose whole argument is measurement would be the one
+// lie that undoes it. Drop entries into src/data/readings.json and the cards
+// appear with no code change.
+export type Reading = {
+  property: string
+  sqft: number
+  before: number
+  after: number
+  date: string
+}
+
+interface Props {
+  copy: PostRenoCopy
+}
+const { copy } = Astro.props as Props
+const readings = readingsData as Reading[]
+const { empty, columns, unit, sqftUnit } = copy.proof
+---
+
+<div data-meter-proof>
+  {
+    readings.length === 0 ? (
+      <div
+        class="mx-auto flex max-w-2xl flex-col items-center rounded-card border-2 border-dashed border-brand-line bg-white px-6 py-12 text-center shadow-soft md:px-10"
+        data-meter-empty
+      >
+        <span class="flex h-16 w-16 items-center justify-center rounded-full bg-brand-circle text-brand-dark">
+          <Icon name="wind" size={32} />
+        </span>
+        <h3 class="mt-5 text-[21px] font-black md:text-[24px]">{empty.title}</h3>
+        <p class="mt-3 text-[16px] leading-relaxed md:text-[17px]">{empty.text}</p>
+      </div>
+    ) : (
+      <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {readings.map((reading) => (
+          <li
+            class="flex flex-col rounded-card border border-brand-line bg-white p-6 shadow-soft"
+            data-meter-card
+          >
+            <p class="text-[13px] font-bold uppercase tracking-[0.14em] text-brand-ink">
+              {reading.property}
+            </p>
+            <p class="mt-1 text-[15px]">
+              {columns.sqft} {reading.sqft.toLocaleString('en-MY')} {sqftUnit}
+            </p>
+
+            <div class="mt-5 flex items-end gap-4">
+              <p>
+                <span class="block text-[13px] font-bold uppercase tracking-wide text-ink">
+                  {columns.before}
+                </span>
+                <span class="block text-[28px] font-black leading-none tabular-nums text-navy">
+                  {reading.before}
+                </span>
+              </p>
+              <Icon name="arrow" size={22} class="mb-1.5 shrink-0 text-brand-dark" />
+              <p>
+                <span class="block text-[13px] font-bold uppercase tracking-wide text-brand-ink">
+                  {columns.after}
+                </span>
+                <span class="block text-[28px] font-black leading-none tabular-nums text-brand-dark">
+                  {reading.after}
+                </span>
+              </p>
+              <span class="mb-1.5 text-[15px] font-bold text-ink">{unit}</span>
+            </div>
+
+            <p class="mt-4 text-[14px]">
+              {columns.date}: {reading.date}
+            </p>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  <div class="mx-auto mt-6 max-w-2xl">
+    <ConfirmNote>{copy.proof.confirm}</ConfirmNote>
+  </div>
+</div>

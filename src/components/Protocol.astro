@@ -1,0 +1,60 @@
+---
+import Icon from './Icon.astro'
+import ConfirmNote from './ConfirmNote.astro'
+import type { PostRenoCopy } from '../data/copy/types'
+
+interface Props {
+  copy: PostRenoCopy
+}
+const { copy } = Astro.props as Props
+---
+
+<div class="flex flex-col gap-10 md:gap-14">
+  {
+    copy.protocol.stages.map((stage, index) => (
+      <div
+        class={`grid items-start gap-7 lg:grid-cols-2 lg:gap-12 ${index % 2 === 1 ? 'lg:[&>figure]:order-first' : ''}`}
+        data-reveal
+      >
+        <div>
+          <p class="text-[44px] font-black leading-none text-brand-circle md:text-[56px]" aria-hidden="true">
+            {stage.number}
+          </p>
+          <h3 class="mt-2 text-[24px] font-black md:text-[30px]">
+            <span class="sr-only">Stage {stage.number}. </span>
+            {stage.title}
+          </h3>
+          <p class="mt-3 text-[17px] leading-relaxed">{stage.text}</p>
+
+          <ul class="mt-6 flex flex-col gap-3.5">
+            {stage.items.map((item) => (
+              <li>
+                <span class="flex gap-3 text-[16px] leading-relaxed text-navy">
+                  <Icon
+                    name={item.confirm ? 'chevron' : 'check'}
+                    size={19}
+                    class={`mt-1 shrink-0 ${item.confirm ? 'text-[#B98900]' : 'text-brand-dark'}`}
+                  />
+                  <span>{item.text}</span>
+                </span>
+                {item.confirm && <ConfirmNote class="ml-8 mt-2.5">{item.confirm}</ConfirmNote>}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <figure class="lg:sticky lg:top-24">
+          <img
+            src={stage.image}
+            alt={stage.imageAlt}
+            width="1040"
+            height="780"
+            loading="lazy"
+            decoding="async"
+            class="aspect-[4/3] w-full rounded-card object-cover shadow-soft"
+          />
+        </figure>
+      </div>
+    ))
+  }
+</div>
